@@ -29,7 +29,7 @@ CREATE SCHEMA jtl;
 ALTER SCHEMA jtl OWNER TO postgres;
 
 
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS `"uuid-ossp`" WITH SCHEMA public;
 
 
 
@@ -71,7 +71,7 @@ SET default_with_oids = false;
 
 
 CREATE TABLE jtl.samples (
-    "timestamp" timestamp without time zone NOT NULL,
+    `"timestamp`" timestamp without time zone NOT NULL,
     elapsed integer,
     label text,
     success boolean,
@@ -93,7 +93,7 @@ ALTER TABLE jtl.samples OWNER TO postgres;
 
 
 CREATE TABLE jtl.monitor (
-    "timestamp" timestamp without time zone NOT NULL,
+    `"timestamp`" timestamp without time zone NOT NULL,
     cpu numeric,
     mem numeric,
     name text,
@@ -185,6 +185,12 @@ CREATE TABLE jtl.projects (
 
 ALTER TABLE jtl.projects OWNER TO postgres;
 
+CREATE TABLE jtl.user_project_access (
+    project_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid DEFAULT public.uuid_generate_v4() NOT NULL
+);
+
+ALTER TABLE jtl.user_project_access OWNER TO postgres;
 
 
 CREATE TABLE jtl.scenario (
@@ -227,6 +233,7 @@ CREATE TABLE jtl.users (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     username character varying(100),
     password character varying(100),
+    role character varying(100),
     create_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
@@ -294,7 +301,7 @@ ALTER TABLE ONLY jtl.users
 CREATE INDEX data_item_id_index ON jtl.data USING btree (item_id);
 
 
-CREATE INDEX generator_monitor_timestamp_idx ON jtl.monitor USING btree ("timestamp" DESC);
+CREATE INDEX generator_monitor_timestamp_idx ON jtl.monitor USING btree (`"timestamp`" DESC);
 
 
 
@@ -315,7 +322,7 @@ CREATE INDEX samples_elapsed_idx ON jtl.samples USING btree (elapsed);
 CREATE INDEX samples_item_idx ON jtl.samples USING btree (item_id);
 
 
-CREATE INDEX samples_timestamp_idx ON jtl.samples USING btree ("timestamp" DESC);
+CREATE INDEX samples_timestamp_idx ON jtl.samples USING btree (`"timestamp`" DESC);
 
 
 CREATE INDEX scenario_id_project_id_name_index ON jtl.scenario USING btree (id, project_id, name);
@@ -386,7 +393,6 @@ ALTER TABLE ONLY jtl.user_item_chart_settings
 
 
 select * from pg_extension;
-
 
 
 SELECT public.create_hypertable('jtl.samples', 'timestamp');
